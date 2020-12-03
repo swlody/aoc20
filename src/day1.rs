@@ -1,4 +1,3 @@
-use aoc_runner_derive::{aoc, aoc_generator};
 use std::{collections::BTreeSet, num::ParseIntError};
 
 #[aoc_generator(day1)]
