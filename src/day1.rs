@@ -29,3 +29,27 @@ fn solve_part2(set: &BTreeSet<u32>) -> Option<u32> {
     }
     None
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    static INPUT: &str = "1721
+979
+366
+299
+675
+1456";
+
+    #[test]
+    fn test_part1() {
+        let set = input_generator(&INPUT).unwrap();
+        assert_eq!(514579, solve_part1(&set).unwrap());
+    }
+
+    #[test]
+    fn test_part2() {
+        let set = input_generator(&INPUT).unwrap();
+        assert_eq!(241861950, solve_part2(&set).unwrap());
+    }
+}

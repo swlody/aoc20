@@ -20,7 +20,35 @@ fn solve_part2(input: &str) -> Option<usize> {
     let line_width = input.find('\n')?;
     Some(
         [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
+            .map(|slope| trees_hit(input, line_width, &slope))
             .iter()
-            .fold(1, |acc, slope| acc * trees_hit(input, line_width, slope)),
+            .product(),
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    static INPUT: &str = "..##.......
+#...#...#..
+.#....#..#.
+..#.#...#.#
+.#...##..#.
+..#.##.....
+.#.#.#....#
+.#........#
+#.##...#...
+#...##....#
+.#..#...#.#";
+
+    #[test]
+    fn test_part1() {
+        assert_eq!(7, solve_part1(&INPUT).unwrap());
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(336, solve_part2(&INPUT).unwrap());
+    }
 }
