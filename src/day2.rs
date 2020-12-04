@@ -1,10 +1,9 @@
-struct Policy {
+struct Policy<'a> {
     position: (usize, usize),
     character: char,
-    password: String,
+    password: &'a str,
 }
 
-#[aoc_generator(day2)]
 fn input_generator(input: &str) -> Option<Vec<Policy>> {
     input
         .lines()
@@ -19,27 +18,30 @@ fn input_generator(input: &str) -> Option<Vec<Policy>> {
             Some(Policy {
                 position: (first.parse().ok()?, second.parse().ok()?),
                 character: character.as_bytes()[0] as char,
-                password: password.to_owned(),
+                password,
             })
         })
         .collect()
 }
 
 #[aoc(day2, part1)]
-fn solve_part1(policies: &[Policy]) -> usize {
-    policies
+fn solve_part1(input: &str) -> Option<usize> {
+    let policies = input_generator(&input)?;
+    let num_valid_policies = policies
         .iter()
         .filter(|policy| {
             let (start_range, end_range) = policy.position;
             let num_matches = policy.password.matches(policy.character).count();
             (start_range..=end_range).contains(&num_matches)
         })
-        .count()
+        .count();
+    Some(num_valid_policies)
 }
 
 #[aoc(day2, part2)]
-fn solve_part2(policies: &[Policy]) -> usize {
-    policies
+fn solve_part2(input: &str) -> Option<usize> {
+    let policies = input_generator(&input)?;
+    let num_valid_policies = policies
         .iter()
         .filter(|policy| {
             let (first_index, second_index) = policy.position;
@@ -47,7 +49,8 @@ fn solve_part2(policies: &[Policy]) -> usize {
             let second_character = policy.password.as_bytes()[second_index - 1] as char;
             (first_character == policy.character) ^ (second_character == policy.character)
         })
-        .count()
+        .count();
+    Some(num_valid_policies)
 }
 
 #[cfg(test)]
@@ -60,13 +63,11 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        let policies = input_generator(&INPUT).unwrap();
-        assert_eq!(2, solve_part1(&policies));
+        assert_eq!(2, solve_part1(&INPUT).unwrap());
     }
 
     #[test]
     fn test_part2() {
-        let policies = input_generator(&INPUT).unwrap();
-        assert_eq!(1, solve_part2(&policies));
+        assert_eq!(1, solve_part2(&INPUT).unwrap());
     }
 }

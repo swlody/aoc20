@@ -1,8 +1,7 @@
 use std::collections::BTreeMap;
 
-type Passport = BTreeMap<String, String>;
+type Passport<'a> = BTreeMap<&'a str, &'a str>;
 
-#[aoc_generator(day4)]
 fn input_generator(input: &str) -> Option<Vec<Passport>> {
     input
         .split("\n\n")
@@ -11,7 +10,7 @@ fn input_generator(input: &str) -> Option<Vec<Passport>> {
                 .split_ascii_whitespace()
                 .map(|field| {
                     let (key, value) = field.split_once(':')?;
-                    Some((key.to_owned(), value.to_owned()))
+                    Some((key, value))
                 })
                 .collect()
         })
@@ -19,20 +18,23 @@ fn input_generator(input: &str) -> Option<Vec<Passport>> {
 }
 
 #[aoc(day4, part1)]
-fn solve_part1(input: &[Passport]) -> usize {
-    input
-        .iter()
+fn solve_part1(input: &str) -> Option<usize> {
+    let input = input_generator(&input)?;
+    let result = input
+        .into_iter()
         .filter(|entry| {
             let num_fields = entry.len();
             num_fields == 8 || num_fields == 7 && !entry.contains_key("cid")
         })
-        .count()
+        .count();
+    Some(result)
 }
 
 #[aoc(day4, part2)]
-fn solve_part2(input: &[Passport]) -> usize {
-    input
-        .iter()
+fn solve_part2(input: &str) -> Option<usize> {
+    let input = input_generator(&input)?;
+    let result = input
+        .into_iter()
         .filter(|entry| {
             match entry.get("byr").and_then(|byr| byr.parse::<u16>().ok()) {
                 Some(birth_year) if (1920..=2002).contains(&birth_year) => {}
@@ -65,8 +67,8 @@ fn solve_part2(input: &[Passport]) -> usize {
                 _ => return false,
             }
 
-            match entry.get("ecl").map(String::as_str) {
-                Some("amb" | "blu" | "brn" | "gry" | "grn" | "hzl" | "oth") => {}
+            match entry.get("ecl") {
+                Some(&"amb" | &"blu" | &"brn" | &"gry" | &"grn" | &"hzl" | &"oth") => {}
                 _ => return false,
             }
 
@@ -79,7 +81,8 @@ fn solve_part2(input: &[Passport]) -> usize {
 
             true
         })
-        .count()
+        .count();
+    Some(result)
 }
 
 #[cfg(test)]
@@ -101,9 +104,7 @@ hgt:179cm
 
 hcl:#cfa07d eyr:2025 pid:166559648
 iyr:2011 ecl:brn hgt:59in";
-
-        let input = input_generator(&INPUT).unwrap();
-        assert_eq!(2, solve_part1(&input));
+        assert_eq!(2, solve_part1(&INPUT).unwrap());
     }
 
     #[test]
@@ -134,10 +135,7 @@ eyr:2022
 
 iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719";
 
-        let input = input_generator(&INPUT1).unwrap();
-        assert_eq!(0, solve_part2(&input));
-
-        let input = input_generator(&INPUT2).unwrap();
-        assert_eq!(4, solve_part2(&input));
+        assert_eq!(0, solve_part2(&INPUT1).unwrap());
+        assert_eq!(4, solve_part2(&INPUT2).unwrap());
     }
 }
