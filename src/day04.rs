@@ -1,6 +1,4 @@
-use std::collections::BTreeMap;
-
-type Passport<'a> = BTreeMap<&'a str, &'a str>;
+type Passport<'a> = fnv::FnvHashMap<&'a str, &'a str>;
 
 fn input_generator(input: &str) -> Option<Vec<Passport>> {
     input
@@ -16,21 +14,21 @@ fn input_generator(input: &str) -> Option<Vec<Passport>> {
 
 #[aoc(day4, part1)]
 fn solve_part1(input: &str) -> Option<usize> {
-    let input = input_generator(&input)?;
-    let result = input
+    let passports = input_generator(&input)?;
+    let num_valid_passports = passports
         .into_iter()
         .filter(|entry| {
             let num_fields = entry.len();
             num_fields == 8 || num_fields == 7 && !entry.contains_key("cid")
         })
         .count();
-    Some(result)
+    Some(num_valid_passports)
 }
 
 #[aoc(day4, part2)]
 fn solve_part2(input: &str) -> Option<usize> {
-    let input = input_generator(&input)?;
-    let result = input
+    let passports = input_generator(&input)?;
+    let num_valid_passports = passports
         .into_iter()
         .filter(|passport| {
             match passport.get("byr").and_then(|byr| byr.parse().ok()) {
@@ -79,7 +77,7 @@ fn solve_part2(input: &str) -> Option<usize> {
             true
         })
         .count();
-    Some(result)
+    Some(num_valid_passports)
 }
 
 #[cfg(test)]
