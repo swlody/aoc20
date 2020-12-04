@@ -1,5 +1,6 @@
 #![feature(str_split_once)]
 #![feature(array_map)]
+#![feature(or_patterns)]
 
 #[macro_use]
 extern crate aoc_runner_derive;

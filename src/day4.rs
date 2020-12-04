@@ -1,10 +1,12 @@
 use std::collections::BTreeMap;
 
+type Passport = BTreeMap<String, String>;
+
 #[aoc_generator(day4)]
-fn input_generator(input: &str) -> Option<Vec<BTreeMap<String, String>>> {
+fn input_generator(input: &str) -> Option<Vec<Passport>> {
     input
         .split("\n\n")
-        .map(|entry| -> Option<BTreeMap<String, String>> {
+        .map(|entry| {
             entry
                 .split_ascii_whitespace()
                 .map(|field| {
@@ -17,7 +19,7 @@ fn input_generator(input: &str) -> Option<Vec<BTreeMap<String, String>>> {
 }
 
 #[aoc(day4, part1)]
-fn solve_part1(input: &[BTreeMap<String, String>]) -> usize {
+fn solve_part1(input: &[Passport]) -> usize {
     input
         .iter()
         .filter(|entry| {
@@ -28,96 +30,51 @@ fn solve_part1(input: &[BTreeMap<String, String>]) -> usize {
 }
 
 #[aoc(day4, part2)]
-fn solve_part2(input: &[BTreeMap<String, String>]) -> usize {
+fn solve_part2(input: &[Passport]) -> usize {
     input
         .iter()
         .filter(|entry| {
-            if let Some(birth_year) = entry
-                .get("byr")
-                .and_then(|birth_year| birth_year.parse::<u16>().ok())
-            {
-                if !(1920..=2002).contains(&birth_year) {
-                    return false;
-                }
-            } else {
-                return false;
+            match entry.get("byr").and_then(|byr| byr.parse::<u16>().ok()) {
+                Some(birth_year) if (1920..=2002).contains(&birth_year) => {}
+                _ => return false,
             }
 
-            if let Some(issue_year) = entry
-                .get("iyr")
-                .and_then(|issue_year| issue_year.parse::<u16>().ok())
-            {
-                if !(2010..=2020).contains(&issue_year) {
-                    return false;
-                }
-            } else {
-                return false;
+            match entry.get("iyr").and_then(|iyr| iyr.parse::<u16>().ok()) {
+                Some(issue_year) if (2010..=2020).contains(&issue_year) => {}
+                _ => return false,
             }
 
-            if let Some(expiration_year) = entry
-                .get("eyr")
-                .and_then(|expiration_year| expiration_year.parse::<u16>().ok())
-            {
-                if !(2020..=2030).contains(&expiration_year) {
-                    return false;
-                }
-            } else {
-                return false;
+            match entry.get("eyr").and_then(|eyr| eyr.parse::<u16>().ok()) {
+                Some(expiration_year) if (2020..=2030).contains(&expiration_year) => {}
+                _ => return false,
             }
 
-            if let Some(height) = entry.get("hgt") {
-                if !height.ends_with("cm") && !height.ends_with("in") {
-                    return false;
-                }
-                if let Some(hgt) = height
-                    .rsplit_once("in")
-                    .and_then(|hgt| hgt.0.parse::<u16>().ok())
-                {
-                    if !(59..=76).contains(&hgt) {
-                        return false;
-                    }
-                } else if let Some(hgt) = height
-                    .rsplit_once("cm")
-                    .and_then(|hgt| hgt.0.parse::<u16>().ok())
-                {
-                    if !(150..=193).contains(&hgt) {
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
+            match entry.get("hgt").and_then(|hgt| {
+                let (height, measure) = hgt.split_at(hgt.len() - 2);
+                Some((height.parse::<u16>().ok()?, measure))
+            }) {
+                Some((val, "cm")) if (150..=193).contains(&val) => {}
+                Some((val, "in")) if (59..=76).contains(&val) => {}
+                _ => return false,
             }
 
-            if let Some(hair_color) = entry.get("hcl") {
-                if !hair_color.starts_with('#')
-                    || hair_color.len() != 7
-                    || !hair_color.chars().skip(1).all(|c| c.is_ascii_hexdigit())
-                {
-                    return false;
-                }
-            } else {
-                return false;
+            match entry.get("hcl").map(|hcl| hcl.split_at(1)) {
+                Some(("#", hair_color))
+                    if hair_color.len() == 6
+                        && hair_color.chars().all(|c| c.is_ascii_hexdigit()) => {}
+                _ => return false,
             }
 
-            if let Some(eye_color) = entry.get("ecl") {
-                if !matches!(
-                    eye_color.as_str(),
-                    "amb" | "blu" | "brn" | "gry" | "grn" | "hzl" | "oth"
-                ) {
-                    return false;
-                }
-            } else {
-                return false;
+            match entry.get("ecl").map(String::as_str) {
+                Some("amb" | "blu" | "brn" | "gry" | "grn" | "hzl" | "oth") => {}
+                _ => return false,
             }
 
-            if let Some(passport_id) = entry.get("pid") {
-                if passport_id.len() != 9 || !passport_id.chars().all(|c| c.is_ascii_digit()) {
-                    return false;
-                }
-            } else {
-                return false;
+            match entry.get("pid") {
+                Some(passport_id)
+                    if passport_id.len() == 9
+                        && passport_id.chars().all(|c| c.is_ascii_digit()) => {}
+                _ => return false,
             }
 
             true
