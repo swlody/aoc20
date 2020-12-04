@@ -8,10 +8,7 @@ fn input_generator(input: &str) -> Option<Vec<Passport>> {
         .map(|entry| {
             entry
                 .split_ascii_whitespace()
-                .map(|field| {
-                    let (key, value) = field.split_once(':')?;
-                    Some((key, value))
-                })
+                .map(|field| field.split_once(':'))
                 .collect()
         })
         .collect()
@@ -36,24 +33,24 @@ fn solve_part2(input: &str) -> Option<usize> {
     let result = input
         .into_iter()
         .filter(|passport| {
-            match passport.get("byr").and_then(|byr| byr.parse::<u16>().ok()) {
+            match passport.get("byr").and_then(|byr| byr.parse().ok()) {
                 Some(1920..=2002) => {}
                 _ => return false,
             }
 
-            match passport.get("iyr").and_then(|iyr| iyr.parse::<u16>().ok()) {
+            match passport.get("iyr").and_then(|iyr| iyr.parse().ok()) {
                 Some(2010..=2020) => {}
                 _ => return false,
             }
 
-            match passport.get("eyr").and_then(|eyr| eyr.parse::<u16>().ok()) {
+            match passport.get("eyr").and_then(|eyr| eyr.parse().ok()) {
                 Some(2020..=2030) => {}
                 _ => return false,
             }
 
             match passport.get("hgt").and_then(|hgt| {
                 let (height, measure) = hgt.split_at(hgt.len() - 2);
-                Some((height.parse::<u16>().ok()?, measure))
+                Some((height.parse().ok()?, measure))
             }) {
                 Some((150..=193, "cm")) => {}
                 Some((59..=76, "in")) => {}

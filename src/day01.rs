@@ -7,7 +7,7 @@ fn input_generator(input: &str) -> Result<BTreeSet<u32>, ParseIntError> {
 
 fn get_pair(set: &BTreeSet<u32>, sum: u32) -> Option<(u32, u32)> {
     for &num in set.iter() {
-        if let Some(&result) = set.get(&(sum - num)) {
+        if let Some(&result) = set.get(&(sum.checked_sub(num)?)) {
             return Some((num, result));
         }
     }
