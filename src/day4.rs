@@ -35,44 +35,44 @@ fn solve_part2(input: &str) -> Option<usize> {
     let input = input_generator(&input)?;
     let result = input
         .into_iter()
-        .filter(|entry| {
-            match entry.get("byr").and_then(|byr| byr.parse::<u16>().ok()) {
-                Some(birth_year) if (1920..=2002).contains(&birth_year) => {}
+        .filter(|passport| {
+            match passport.get("byr").and_then(|byr| byr.parse::<u16>().ok()) {
+                Some(1920..=2002) => {}
                 _ => return false,
             }
 
-            match entry.get("iyr").and_then(|iyr| iyr.parse::<u16>().ok()) {
-                Some(issue_year) if (2010..=2020).contains(&issue_year) => {}
+            match passport.get("iyr").and_then(|iyr| iyr.parse::<u16>().ok()) {
+                Some(2010..=2020) => {}
                 _ => return false,
             }
 
-            match entry.get("eyr").and_then(|eyr| eyr.parse::<u16>().ok()) {
-                Some(expiration_year) if (2020..=2030).contains(&expiration_year) => {}
+            match passport.get("eyr").and_then(|eyr| eyr.parse::<u16>().ok()) {
+                Some(2020..=2030) => {}
                 _ => return false,
             }
 
-            match entry.get("hgt").and_then(|hgt| {
+            match passport.get("hgt").and_then(|hgt| {
                 let (height, measure) = hgt.split_at(hgt.len() - 2);
                 Some((height.parse::<u16>().ok()?, measure))
             }) {
-                Some((val, "cm")) if (150..=193).contains(&val) => {}
-                Some((val, "in")) if (59..=76).contains(&val) => {}
+                Some((150..=193, "cm")) => {}
+                Some((59..=76, "in")) => {}
                 _ => return false,
             }
 
-            match entry.get("hcl").map(|hcl| hcl.split_at(1)) {
+            match passport.get("hcl").map(|hcl| hcl.split_at(1)) {
                 Some(("#", hair_color))
                     if hair_color.len() == 6
                         && hair_color.chars().all(|c| c.is_ascii_hexdigit()) => {}
                 _ => return false,
             }
 
-            match entry.get("ecl") {
+            match passport.get("ecl") {
                 Some(&"amb" | &"blu" | &"brn" | &"gry" | &"grn" | &"hzl" | &"oth") => {}
                 _ => return false,
             }
 
-            match entry.get("pid") {
+            match passport.get("pid") {
                 Some(passport_id)
                     if passport_id.len() == 9
                         && passport_id.chars().all(|c| c.is_ascii_digit()) => {}
