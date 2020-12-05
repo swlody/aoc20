@@ -1,29 +1,24 @@
+fn traverse_bsp(input: &str, initial_max: u32) -> u32 {
+    let (mut min, mut max, mut id) = (0, initial_max, 0);
+    for division in input.chars() {
+        let difference = max - min;
+        id = if division == 'F' || division == 'L' {
+            max = min + difference / 2;
+            min
+        } else {
+            min += (difference + 1) / 2;
+            max
+        }
+    }
+
+    id
+}
+
 fn get_seat_id(seat: &str) -> u32 {
-    let (row, column) = seat.split_at(7);
-    let (mut min, mut max, mut row_id) = (0, 127, 0);
-    for division in row.chars() {
-        let difference = max - min;
-        if division == 'F' {
-            max = min + difference / 2;
-            row_id = min;
-        } else {
-            assert_eq!('B', division);
-            min += (difference + 1) / 2;
-            row_id = max;
-        }
-    }
-    let (mut min, mut max, mut column_id) = (0, 7, 0);
-    for division in column.chars() {
-        let difference = max - min;
-        if division == 'L' {
-            max = min + difference / 2;
-            column_id = min;
-        } else {
-            assert_eq!('R', division);
-            min += (difference + 1) / 2;
-            column_id = max;
-        }
-    }
+    let (rows, columns) = seat.split_at(7);
+    let row_id = traverse_bsp(rows, 127);
+    let column_id = traverse_bsp(columns, 7);
+
     row_id * 8 + column_id
 }
 
