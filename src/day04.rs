@@ -1,6 +1,6 @@
 type Passport<'a> = fnv::FnvHashMap<&'a str, &'a str>;
 
-fn input_generator(input: &str) -> Option<Vec<Passport>> {
+pub fn input_generator(input: &str) -> Option<Vec<Passport>> {
     input
         .split("\n\n")
         .map(|entry| {
@@ -12,24 +12,19 @@ fn input_generator(input: &str) -> Option<Vec<Passport>> {
         .collect()
 }
 
-#[aoc(day4, part1)]
-fn solve_part1(input: &str) -> Option<usize> {
-    let passports = input_generator(&input)?;
-    let num_valid_passports = passports
-        .into_iter()
+pub fn solve_part1(passports: &[Passport]) -> usize {
+    passports
+        .iter()
         .filter(|entry| {
             let num_fields = entry.len();
             num_fields == 8 || num_fields == 7 && !entry.contains_key("cid")
         })
-        .count();
-    Some(num_valid_passports)
+        .count()
 }
 
-#[aoc(day4, part2)]
-fn solve_part2(input: &str) -> Option<usize> {
-    let passports = input_generator(&input)?;
-    let num_valid_passports = passports
-        .into_iter()
+pub fn solve_part2(passports: &[Passport]) -> usize {
+    passports
+        .iter()
         .filter(|passport| {
             match passport.get("byr").and_then(|byr| byr.parse().ok()) {
                 Some(1920..=2002) => {}
@@ -76,8 +71,7 @@ fn solve_part2(input: &str) -> Option<usize> {
 
             true
         })
-        .count();
-    Some(num_valid_passports)
+        .count()
 }
 
 #[cfg(test)]
@@ -99,7 +93,8 @@ hgt:179cm
 
 hcl:#cfa07d eyr:2025 pid:166559648
 iyr:2011 ecl:brn hgt:59in";
-        assert_eq!(2, solve_part1(&INPUT).unwrap());
+        let passports = input_generator(&INPUT).unwrap();
+        assert_eq!(2, solve_part1(&passports));
     }
 
     #[test]
@@ -130,7 +125,9 @@ eyr:2022
 
 iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719";
 
-        assert_eq!(0, solve_part2(&INPUT1).unwrap());
-        assert_eq!(4, solve_part2(&INPUT2).unwrap());
+        let passports = input_generator(&INPUT1).unwrap();
+        assert_eq!(0, solve_part2(&passports));
+        let passports = input_generator(&INPUT2).unwrap();
+        assert_eq!(4, solve_part2(&passports));
     }
 }

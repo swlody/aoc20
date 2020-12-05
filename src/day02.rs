@@ -1,10 +1,10 @@
-struct Policy<'a> {
+pub struct Policy<'a> {
     position: (usize, usize),
     character: char,
     password: &'a str,
 }
 
-fn input_generator(input: &str) -> Option<Vec<Policy>> {
+pub fn input_generator(input: &str) -> Option<Vec<Policy>> {
     input
         .lines()
         .map(|line| {
@@ -24,24 +24,19 @@ fn input_generator(input: &str) -> Option<Vec<Policy>> {
         .collect()
 }
 
-#[aoc(day2, part1)]
-fn solve_part1(input: &str) -> Option<usize> {
-    let policies = input_generator(&input)?;
-    let num_valid_policies = policies
+pub fn solve_part1(policies: &[Policy]) -> usize {
+    policies
         .iter()
         .filter(|policy| {
             let (start_range, end_range) = policy.position;
             let num_matches = policy.password.matches(policy.character).count();
             (start_range..=end_range).contains(&num_matches)
         })
-        .count();
-    Some(num_valid_policies)
+        .count()
 }
 
-#[aoc(day2, part2)]
-fn solve_part2(input: &str) -> Option<usize> {
-    let policies = input_generator(&input)?;
-    let num_valid_policies = policies
+pub fn solve_part2(policies: &[Policy]) -> usize {
+    policies
         .iter()
         .filter(|policy| {
             let (first_index, second_index) = policy.position;
@@ -49,8 +44,7 @@ fn solve_part2(input: &str) -> Option<usize> {
             let second_character = policy.password.as_bytes()[second_index - 1] as char;
             (first_character == policy.character) ^ (second_character == policy.character)
         })
-        .count();
-    Some(num_valid_policies)
+        .count()
 }
 
 #[cfg(test)]
@@ -63,11 +57,13 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        assert_eq!(2, solve_part1(&INPUT).unwrap());
+        let policies = input_generator(&INPUT).unwrap();
+        assert_eq!(2, solve_part1(&policies));
     }
 
     #[test]
     fn test_part2() {
-        assert_eq!(1, solve_part2(&INPUT).unwrap());
+        let policies = input_generator(&INPUT).unwrap();
+        assert_eq!(1, solve_part2(&policies));
     }
 }
