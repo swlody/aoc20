@@ -8,7 +8,7 @@ mod day03;
 mod day04;
 mod day05;
 
-use ::chrono::{prelude::*, FixedOffset, TimeZone};
+use chrono::{prelude::*, FixedOffset, TimeZone};
 use std::time::Instant;
 
 fn main() {
