@@ -13,18 +13,18 @@ fn get_pair(set: &BTreeSet<u32>, sum: u32) -> Option<(u32, u32)> {
     None
 }
 
-pub fn solve_part1(set: &BTreeSet<u32>) -> Option<u32> {
-    let (a, b) = get_pair(&set, 2020)?;
-    Some(a * b)
+pub fn solve_part1(set: &BTreeSet<u32>) -> u32 {
+    let (a, b) = get_pair(&set, 2020).unwrap();
+    a * b
 }
 
-pub fn solve_part2(set: &BTreeSet<u32>) -> Option<u32> {
+pub fn solve_part2(set: &BTreeSet<u32>) -> u32 {
     for &num in set.iter() {
         if let Some((a, b)) = get_pair(&set, 2020 - num) {
-            return Some(a * b * num);
+            return a * b * num;
         }
     }
-    None
+    unreachable!()
 }
 
 #[cfg(test)]
@@ -41,12 +41,12 @@ mod tests {
     #[test]
     fn test_part1() {
         let set = input_generator(&INPUT).unwrap();
-        assert_eq!(514579, solve_part1(&set).unwrap());
+        assert_eq!(514579, solve_part1(&set));
     }
 
     #[test]
     fn test_part2() {
         let set = input_generator(&INPUT).unwrap();
-        assert_eq!(241861950, solve_part2(&set).unwrap());
+        assert_eq!(241861950, solve_part2(&set));
     }
 }

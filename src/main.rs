@@ -6,6 +6,7 @@ mod day01;
 mod day02;
 mod day03;
 mod day04;
+mod day05;
 
 use ::chrono::{prelude::*, FixedOffset, TimeZone};
 use std::time::Instant;
@@ -40,12 +41,12 @@ fn main() {
         println!("  Generator: {:?}", generator_time);
 
         let part1_start = Instant::now();
-        let output_part1 = day01::solve_part1(&input).unwrap();
+        let output_part1 = day01::solve_part1(&input);
         let part1_time = part1_start.elapsed();
         println!("  Part 1: {}\n    in {:?}", output_part1, part1_time);
 
         let part2_start = Instant::now();
-        let output_part2 = day01::solve_part2(&input).unwrap();
+        let output_part2 = day01::solve_part2(&input);
         let part2_time = part2_start.elapsed();
         println!("  Part 2: {}\n    in {:?}\n", output_part2, part2_time);
     }
@@ -75,12 +76,12 @@ fn main() {
         let input = include_str!("../input/day03.txt");
 
         let part1_start = Instant::now();
-        let output_part1 = day03::solve_part1(&input).unwrap();
+        let output_part1 = day03::solve_part1(&input);
         let part1_time = part1_start.elapsed();
         println!("  Part 1: {}\n    in {:?}", output_part1, part1_time);
 
         let part2_start = Instant::now();
-        let output_part2 = day03::solve_part2(&input).unwrap();
+        let output_part2 = day03::solve_part2(&input);
         let part2_time = part2_start.elapsed();
         println!("  Part 2: {}\n    in {:?}\n", output_part2, part2_time);
     }
@@ -101,6 +102,21 @@ fn main() {
 
         let part2_start = Instant::now();
         let output_part2 = day04::solve_part2(&input);
+        let part2_time = part2_start.elapsed();
+        println!("  Part 2: {}\n    in {:?}\n", output_part2, part2_time);
+    }
+
+    if run_all || day == 5 {
+        println!("Day 5:");
+        let input = include_str!("../input/day05.txt");
+
+        let part1_start = Instant::now();
+        let output_part1 = day05::solve_part1(&input).unwrap();
+        let part1_time = part1_start.elapsed();
+        println!("  Part 1: {}\n    in {:?}", output_part1, part1_time);
+
+        let part2_start = Instant::now();
+        let output_part2 = day05::solve_part2(&input);
         let part2_time = part2_start.elapsed();
         println!("  Part 2: {}\n    in {:?}\n", output_part2, part2_time);
     }
