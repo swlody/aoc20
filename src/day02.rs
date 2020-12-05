@@ -4,22 +4,19 @@ pub struct Policy<'a> {
     password: &'a str,
 }
 
-pub fn input_generator(input: &str) -> Option<Vec<Policy>> {
+pub fn input_generator(input: &str) -> Vec<Policy> {
     input
         .lines()
         .map(|line| {
-            let (range, rest) = line.split_once(' ')?;
-            let (first, second) = range.split_once('-')?;
-            let (character, password) = rest.split_once(": ")?;
-            if character.len() != 1 {
-                return None;
-            }
+            let (range, rest) = line.split_once(' ').unwrap();
+            let (first, second) = range.split_once('-').unwrap();
+            let (character, password) = rest.split_once(": ").unwrap();
 
-            Some(Policy {
-                position: (first.parse().ok()?, second.parse().ok()?),
+            Policy {
+                position: (first.parse().unwrap(), second.parse().unwrap()),
                 character: character.as_bytes()[0] as char,
                 password,
-            })
+            }
         })
         .collect()
 }
@@ -57,13 +54,13 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        let policies = input_generator(&INPUT).unwrap();
+        let policies = input_generator(&INPUT);
         assert_eq!(2, solve_part1(&policies));
     }
 
     #[test]
     fn test_part2() {
-        let policies = input_generator(&INPUT).unwrap();
+        let policies = input_generator(&INPUT);
         assert_eq!(1, solve_part2(&policies));
     }
 }

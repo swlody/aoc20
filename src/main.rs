@@ -36,7 +36,7 @@ fn main() {
         let input = include_str!("../input/day01.txt");
 
         let generator_start = Instant::now();
-        let input = day01::input_generator(&input).unwrap();
+        let input = day01::input_generator(&input);
         let generator_time = generator_start.elapsed();
         println!("  Generator: {:?}", generator_time);
 
@@ -56,7 +56,7 @@ fn main() {
         let input = include_str!("../input/day02.txt");
 
         let generator_start = Instant::now();
-        let input = day02::input_generator(&input).unwrap();
+        let input = day02::input_generator(&input);
         let generator_time = generator_start.elapsed();
         println!("  Generator: {:?}", generator_time);
 
@@ -91,7 +91,7 @@ fn main() {
         let input = include_str!("../input/day04.txt");
 
         let generator_start = Instant::now();
-        let input = day04::input_generator(&input).unwrap();
+        let input = day04::input_generator(&input);
         let generator_time = generator_start.elapsed();
         println!("  Generator: {:?}", generator_time);
 
@@ -111,7 +111,7 @@ fn main() {
         let input = include_str!("../input/day05.txt");
 
         let part1_start = Instant::now();
-        let output_part1 = day05::solve_part1(&input).unwrap();
+        let output_part1 = day05::solve_part1(&input);
         let part1_time = part1_start.elapsed();
         println!("  Part 1: {}\n    in {:?}", output_part1, part1_time);
 

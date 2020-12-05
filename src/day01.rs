@@ -1,7 +1,7 @@
-use std::{collections::BTreeSet, num::ParseIntError};
+use std::collections::BTreeSet;
 
-pub fn input_generator(input: &str) -> Result<BTreeSet<u32>, ParseIntError> {
-    input.lines().map(|line| line.parse()).collect()
+pub fn input_generator(input: &str) -> BTreeSet<u32> {
+    input.lines().map(|line| line.parse().unwrap()).collect()
 }
 
 fn get_pair(set: &BTreeSet<u32>, sum: u32) -> Option<(u32, u32)> {
@@ -40,13 +40,13 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        let set = input_generator(&INPUT).unwrap();
+        let set = input_generator(&INPUT);
         assert_eq!(514579, solve_part1(&set));
     }
 
     #[test]
     fn test_part2() {
-        let set = input_generator(&INPUT).unwrap();
+        let set = input_generator(&INPUT);
         assert_eq!(241861950, solve_part2(&set));
     }
 }

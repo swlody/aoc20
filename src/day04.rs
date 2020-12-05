@@ -1,12 +1,12 @@
 type Passport<'a> = fnv::FnvHashMap<&'a str, &'a str>;
 
-pub fn input_generator(input: &str) -> Option<Vec<Passport>> {
+pub fn input_generator(input: &str) -> Vec<Passport> {
     input
         .split("\n\n")
         .map(|entry| {
             entry
                 .split_ascii_whitespace()
-                .map(|field| field.split_once(':'))
+                .map(|field| field.split_once(':').unwrap())
                 .collect()
         })
         .collect()
@@ -93,7 +93,7 @@ hgt:179cm
 
 hcl:#cfa07d eyr:2025 pid:166559648
 iyr:2011 ecl:brn hgt:59in";
-        let passports = input_generator(&INPUT).unwrap();
+        let passports = input_generator(&INPUT);
         assert_eq!(2, solve_part1(&passports));
     }
 
@@ -125,9 +125,9 @@ eyr:2022
 
 iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719";
 
-        let passports = input_generator(&INPUT1).unwrap();
+        let passports = input_generator(&INPUT1);
         assert_eq!(0, solve_part2(&passports));
-        let passports = input_generator(&INPUT2).unwrap();
+        let passports = input_generator(&INPUT2);
         assert_eq!(4, solve_part2(&passports));
     }
 }
