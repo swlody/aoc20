@@ -7,6 +7,7 @@ mod day02;
 mod day03;
 mod day04;
 mod day05;
+mod day06;
 
 use chrono::{prelude::*, FixedOffset, TimeZone};
 use std::time::Instant;
@@ -117,6 +118,21 @@ fn main() {
 
         let part2_start = Instant::now();
         let output_part2 = day05::solve_part2(&input);
+        let part2_time = part2_start.elapsed();
+        println!("  Part 2: {}\n    in {:?}\n", output_part2, part2_time);
+    }
+
+    if run_all || day == 6 {
+        println!("Day 6:");
+        let input = include_str!("../input/day06.txt");
+
+        let part1_start = Instant::now();
+        let output_part1 = day06::solve_part1(&input);
+        let part1_time = part1_start.elapsed();
+        println!("  Part 1: {}\n    in {:?}", output_part1, part1_time);
+
+        let part2_start = Instant::now();
+        let output_part2 = day06::solve_part2(&input);
         let part2_time = part2_start.elapsed();
         println!("  Part 2: {}\n    in {:?}\n", output_part2, part2_time);
     }
