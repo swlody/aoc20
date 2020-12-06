@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+// use std::collections::BTreeSet;
 
 // pub fn solve_part1(input: &str) -> usize {
 //     input
@@ -7,53 +7,64 @@ use std::collections::HashSet;
 //             group
 //                 .lines()
 //                 .flat_map(str::chars)
-//                 .collect::<HashSet<_>>()
+//                 .collect::<BTreeSet<_>>()
 //                 .len()
 //         })
 //         .sum()
 // }
 
 // A little uglier but ~10x faster than above
-pub fn solve_part1(input: &str) -> usize {
+// pub fn solve_part1(input: &str) -> usize {
+//     input
+//         .split("\n\n")
+//         .map(|group| {
+//             let mut existence = [false; 26];
+//             group
+//                 .lines()
+//                 .flat_map(str::bytes)
+//                 .map(|c| !std::mem::replace(&mut existence[(c - b'a') as usize], true) as usize)
+//                 .sum::<usize>()
+//         })
+//         .sum()
+// }
+
+// Using a bitset instead of a bool array
+pub fn solve_part1(input: &str) -> u32 {
     input
         .split("\n\n")
         .map(|group| {
-            let mut existence = [false; 26];
             group
                 .lines()
                 .flat_map(str::as_bytes)
-                .map(|c| {
-                    let idx = (c - b'a') as usize;
-                    let existed = existence[idx];
-                    existence[idx] = true;
-                    !existed as usize
-                })
-                .sum::<usize>()
+                .fold(0u32, |set, c| set | 1 << (c - b'a'))
+                .count_ones()
         })
         .sum()
 }
 
-pub fn solve_part2(input: &str) -> usize {
+// pub fn solve_part2(input: &str) -> usize {
+//     input
+//         .split("\n\n")
+//         .map(|group| {
+//             group
+//                 .lines()
+//                 .map(|person| person.chars().collect::<BTreeSet<_>>())
+//                 .fold_first(|a, b| a.intersection(&b).copied().collect())
+//                 .unwrap()
+//                 .len()
+//         })
+//         .sum()
+// }
+
+pub fn solve_part2(input: &str) -> u32 {
     input
         .split("\n\n")
         .map(|group| {
             group
                 .lines()
-                .fold(
-                    [
-                        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
-                        'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-                    ]
-                    .iter()
-                    .cloned()
-                    .collect::<HashSet<_>>(),
-                    |set, person| {
-                        set.intersection(&person.chars().collect())
-                            .copied()
-                            .collect()
-                    },
-                )
-                .len()
+                .map(|person| person.bytes().fold(0u32, |set, c| set | 1 << (c - b'a')))
+                .fold(u32::MAX, |a, b| a & b)
+                .count_ones()
         })
         .sum()
 }
