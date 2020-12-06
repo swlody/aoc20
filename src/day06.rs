@@ -1,49 +1,61 @@
 use std::collections::HashSet;
 
+// pub fn solve_part1(input: &str) -> usize {
+//     input
+//         .split("\n\n")
+//         .map(|group| {
+//             group
+//                 .lines()
+//                 .flat_map(str::chars)
+//                 .collect::<HashSet<_>>()
+//                 .len()
+//         })
+//         .sum()
+// }
+
+// A little uglier but ~10x faster than above
 pub fn solve_part1(input: &str) -> usize {
-    let groups = input.split("\n\n");
-
-    let mut total = 0;
-    for group in groups {
-        let people = group.lines();
-        let mut set = HashSet::<char>::new();
-
-        for person in people {
-            for answer in person.chars() {
-                set.insert(answer);
-            }
-        }
-
-        total += set.len();
-    }
-
-    total
+    input
+        .split("\n\n")
+        .map(|group| {
+            let mut existence = [false; 26];
+            group
+                .lines()
+                .flat_map(str::as_bytes)
+                .map(|c| {
+                    let idx = (c - b'a') as usize;
+                    let existed = existence[idx];
+                    existence[idx] = true;
+                    !existed as usize
+                })
+                .sum::<usize>()
+        })
+        .sum()
 }
 
 pub fn solve_part2(input: &str) -> usize {
-    let groups = input.split("\n\n");
-
-    let mut total = 0;
-    for group in groups {
-        let mut people = group.lines();
-        let mut set = HashSet::<char>::new();
-        let first_person = people.next().unwrap();
-        for answer in first_person.chars() {
-            set.insert(answer);
-        }
-
-        while let Some(person) = people.next() {
-            let mut new_set = HashSet::<char>::new();
-            for answer in person.chars() {
-                new_set.insert(answer);
-            }
-            set = set.intersection(&new_set).copied().collect();
-        }
-
-        total += set.len();
-    }
-
-    total
+    input
+        .split("\n\n")
+        .map(|group| {
+            group
+                .lines()
+                .fold(
+                    [
+                        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+                        'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+                    ]
+                    .iter()
+                    .cloned()
+                    .collect::<HashSet<_>>(),
+                    |set, person| {
+                        set.intersection(&person.chars().collect())
+                            .copied()
+                            .collect()
+                    },
+                )
+                .len()
+        })
+        .sum()
 }
 
 #[cfg(test)]
