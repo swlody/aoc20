@@ -1,70 +1,60 @@
 use std::collections::BTreeMap;
 
-pub fn can_contain_shiny_gold(map: &BTreeMap<&str, Vec<(&str, u32)>>, color: &str) -> bool {
+pub fn contains_shiny_gold_recursive(map: &BTreeMap<&str, Vec<(&str, u32)>>, color: &str) -> bool {
     if color == "shiny gold" {
-        return true;
+        true
+    } else {
+        let contained = map.get(color).unwrap();
+        contained
+            .iter()
+            .any(|(color, _count)| contains_shiny_gold_recursive(&map, color))
     }
-    for (color, _count) in map.get(color).unwrap() {
-        if can_contain_shiny_gold(&map, color) {
-            return true;
-        }
-    }
-    false
 }
 
 pub fn input_generator(input: &str) -> BTreeMap<&str, Vec<(&str, u32)>> {
-    let rules = input.lines();
-    let mut map = BTreeMap::<&str, Vec<(&str, u32)>>::new();
-    for rule in rules {
-        let (base_color, rest) = rule.split_once(" bags contain ").unwrap();
-        let mut vec = Vec::new();
-
-        let all_colors = rest.split(", ");
-
-        for color in all_colors {
-            if color == "no other bags." {
-                break;
-            }
-            let (num, color) = color.split_once(' ').unwrap();
-            let num = num.parse::<u32>().unwrap();
-            let contained_color = color.rsplit_once(' ').unwrap().0;
-            vec.push((contained_color, num));
-        }
-
-        map.insert(base_color, vec);
-    }
-    map
+    input
+        .lines()
+        .map(|rule| {
+            let (base_color, rest) = rule.split_once(" bags contain ").unwrap();
+            let contained_bags = rest
+                .split(", ")
+                .filter_map(|contained| {
+                    if contained == "no other bags." {
+                        None
+                    } else {
+                        let (count, contained_color) = contained.split_once(' ').unwrap();
+                        let count = count.parse::<u32>().unwrap();
+                        let contained_color = contained_color.rsplit_once(' ').unwrap().0;
+                        Some((contained_color, count))
+                    }
+                })
+                .collect::<Vec<_>>();
+            (base_color, contained_bags)
+        })
+        .collect()
 }
 
-pub fn solve_part1(map: &BTreeMap<&str, Vec<(&str, u32)>>) -> u32 {
-    let mut total_count = 0;
-    for (_color, contained) in map.iter() {
-        for (color, _count) in contained.iter() {
-            if can_contain_shiny_gold(&map, color) {
-                total_count += 1;
-                break;
-            }
-        }
-    }
-    total_count
+pub fn solve_part1(map: &BTreeMap<&str, Vec<(&str, u32)>>) -> usize {
+    map.values()
+        .filter(|contained| {
+            contained
+                .iter()
+                .any(|(color, _count)| contains_shiny_gold_recursive(&map, color))
+        })
+        .count()
 }
 
-fn get_count(map: &BTreeMap<&str, Vec<(&str, u32)>>, color: &str) -> u32 {
-    let mut total_count = 0;
-    for (color, count) in map.get(color).unwrap() {
-        total_count += count;
-        total_count += count * get_count(&map, color);
-    }
-    total_count
+fn get_contained_bag_count_recursive(map: &BTreeMap<&str, Vec<(&str, u32)>>, color: &str) -> u32 {
+    map.get(color)
+        .unwrap()
+        .iter()
+        .fold(0, |acc, (color, count)| {
+            acc + count + count * get_contained_bag_count_recursive(&map, color)
+        })
 }
 
 pub fn solve_part2(map: &BTreeMap<&str, Vec<(&str, u32)>>) -> u32 {
-    let mut total_count = 0;
-    for (color, count) in map.get("shiny gold").unwrap() {
-        total_count += count;
-        total_count += count * get_count(&map, color);
-    }
-    total_count
+    get_contained_bag_count_recursive(&map, "shiny gold")
 }
 
 #[cfg(test)]
