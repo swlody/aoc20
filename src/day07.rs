@@ -1,17 +1,17 @@
-use std::collections::BTreeMap;
+type BagMap<'a> = fnv::FnvHashMap<&'a str, Vec<(&'a str, u32)>>;
 
-pub fn contains_shiny_gold_recursive(map: &BTreeMap<&str, Vec<(&str, u32)>>, color: &str) -> bool {
+fn contains_shiny_gold_recursive(map: &BagMap, color: &str) -> bool {
     if color == "shiny gold" {
         true
     } else {
         let contained = map.get(color).unwrap();
         contained
             .iter()
-            .any(|(color, _count)| contains_shiny_gold_recursive(&map, color))
+            .any(|(color, _count)| contains_shiny_gold_recursive(map, color))
     }
 }
 
-pub fn input_generator(input: &str) -> BTreeMap<&str, Vec<(&str, u32)>> {
+pub fn input_generator(input: &str) -> BagMap {
     input
         .lines()
         .map(|rule| {
@@ -34,27 +34,27 @@ pub fn input_generator(input: &str) -> BTreeMap<&str, Vec<(&str, u32)>> {
         .collect()
 }
 
-pub fn solve_part1(map: &BTreeMap<&str, Vec<(&str, u32)>>) -> usize {
+pub fn solve_part1(map: &BagMap) -> usize {
     map.values()
         .filter(|contained| {
             contained
                 .iter()
-                .any(|(color, _count)| contains_shiny_gold_recursive(&map, color))
+                .any(|(color, _count)| contains_shiny_gold_recursive(map, color))
         })
         .count()
 }
 
-fn get_contained_bag_count_recursive(map: &BTreeMap<&str, Vec<(&str, u32)>>, color: &str) -> u32 {
+fn get_contained_bag_count_recursive(map: &BagMap, color: &str) -> u32 {
     map.get(color)
         .unwrap()
         .iter()
         .fold(0, |acc, (color, count)| {
-            acc + count + count * get_contained_bag_count_recursive(&map, color)
+            acc + count + count * get_contained_bag_count_recursive(map, color)
         })
 }
 
-pub fn solve_part2(map: &BTreeMap<&str, Vec<(&str, u32)>>) -> u32 {
-    get_contained_bag_count_recursive(&map, "shiny gold")
+pub fn solve_part2(map: &BagMap) -> u32 {
+    get_contained_bag_count_recursive(map, "shiny gold")
 }
 
 #[cfg(test)]
