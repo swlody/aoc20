@@ -2,6 +2,7 @@
 #![feature(array_map)]
 #![feature(or_patterns)]
 #![feature(iterator_fold_self)]
+#![feature(map_first_last)]
 
 mod day01;
 mod day02;
@@ -9,6 +10,7 @@ mod day03;
 mod day04;
 mod day05;
 mod day06;
+mod day07;
 
 use chrono::{prelude::*, FixedOffset, TimeZone};
 use std::time::Instant;
@@ -33,6 +35,7 @@ fn main() {
         }
     }
 
+    // TODO seriously write a macro for all this
     if run_all || day == 1 {
         println!("Day 1:");
         let input = include_str!("../input/day01.txt");
@@ -134,6 +137,26 @@ fn main() {
 
         let part2_start = Instant::now();
         let output_part2 = day06::solve_part2(&input);
+        let part2_time = part2_start.elapsed();
+        println!("  Part 2: {}\n    in {:?}\n", output_part2, part2_time);
+    }
+
+    if run_all || day == 7 {
+        println!("Day 7:");
+        let input = include_str!("../input/day07.txt");
+
+        let generator_start = Instant::now();
+        let input = day07::input_generator(&input);
+        let generator_time = generator_start.elapsed();
+        println!("  Generator: {:?}", generator_time);
+
+        let part1_start = Instant::now();
+        let output_part1 = day07::solve_part1(&input);
+        let part1_time = part1_start.elapsed();
+        println!("  Part 1: {}\n    in {:?}", output_part1, part1_time);
+
+        let part2_start = Instant::now();
+        let output_part2 = day07::solve_part2(&input);
         let part2_time = part2_start.elapsed();
         println!("  Part 2: {}\n    in {:?}\n", output_part2, part2_time);
     }
