@@ -23,53 +23,53 @@ pub fn solve_part1(passports: &[Passport]) -> usize {
 }
 
 pub fn solve_part2(passports: &[Passport]) -> usize {
+    fn is_valid(passport: &Passport) -> bool {
+        match passport.get("byr").and_then(|byr| byr.parse().ok()) {
+            Some(1920..=2002) => {}
+            _ => return false,
+        }
+
+        match passport.get("iyr").and_then(|iyr| iyr.parse().ok()) {
+            Some(2010..=2020) => {}
+            _ => return false,
+        }
+
+        match passport.get("eyr").and_then(|eyr| eyr.parse().ok()) {
+            Some(2020..=2030) => {}
+            _ => return false,
+        }
+
+        match passport.get("hgt").and_then(|hgt| {
+            let (height, measure) = hgt.split_at(hgt.len() - 2);
+            Some((height.parse().ok()?, measure))
+        }) {
+            Some((150..=193, "cm") | (59..=76, "in")) => {}
+            _ => return false,
+        }
+
+        match passport.get("hcl").map(|hcl| hcl.split_at(1)) {
+            Some(("#", hair_color))
+                if hair_color.len() == 6 && hair_color.chars().all(|c| c.is_ascii_hexdigit()) => {}
+            _ => return false,
+        }
+
+        match passport.get("ecl") {
+            Some(&"amb" | &"blu" | &"brn" | &"gry" | &"grn" | &"hzl" | &"oth") => {}
+            _ => return false,
+        }
+
+        match passport.get("pid") {
+            Some(passport_id)
+                if passport_id.len() == 9 && passport_id.chars().all(|c| c.is_ascii_digit()) => {}
+            _ => return false,
+        }
+
+        true
+    }
+
     passports
         .iter()
-        .filter(|passport| {
-            match passport.get("byr").and_then(|byr| byr.parse().ok()) {
-                Some(1920..=2002) => {}
-                _ => return false,
-            }
-
-            match passport.get("iyr").and_then(|iyr| iyr.parse().ok()) {
-                Some(2010..=2020) => {}
-                _ => return false,
-            }
-
-            match passport.get("eyr").and_then(|eyr| eyr.parse().ok()) {
-                Some(2020..=2030) => {}
-                _ => return false,
-            }
-
-            match passport.get("hgt").and_then(|hgt| {
-                let (height, measure) = hgt.split_at(hgt.len() - 2);
-                Some((height.parse().ok()?, measure))
-            }) {
-                Some((150..=193, "cm") | (59..=76, "in")) => {}
-                _ => return false,
-            }
-
-            match passport.get("hcl").map(|hcl| hcl.split_at(1)) {
-                Some(("#", hair_color))
-                    if hair_color.len() == 6
-                        && hair_color.chars().all(|c| c.is_ascii_hexdigit()) => {}
-                _ => return false,
-            }
-
-            match passport.get("ecl") {
-                Some(&"amb" | &"blu" | &"brn" | &"gry" | &"grn" | &"hzl" | &"oth") => {}
-                _ => return false,
-            }
-
-            match passport.get("pid") {
-                Some(passport_id)
-                    if passport_id.len() == 9
-                        && passport_id.chars().all(|c| c.is_ascii_digit()) => {}
-                _ => return false,
-            }
-
-            true
-        })
+        .filter(|passport| is_valid(passport))
         .count()
 }
 

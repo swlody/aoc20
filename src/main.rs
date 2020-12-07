@@ -35,6 +35,8 @@ fn main() {
         }
     }
 
+    let mut total_time = std::time::Duration::new(0, 0);
+
     // TODO seriously write a macro for all this
     if run_all || day == 1 {
         println!("Day 1:");
@@ -54,6 +56,7 @@ fn main() {
         let output_part2 = day01::solve_part2(&input);
         let part2_time = part2_start.elapsed();
         println!("  Part 2: {}\n    in {:?}\n", output_part2, part2_time);
+        total_time += generator_time + part1_time + part2_time;
     }
 
     if run_all || day == 2 {
@@ -74,6 +77,7 @@ fn main() {
         let output_part2 = day02::solve_part2(&input);
         let part2_time = part2_start.elapsed();
         println!("  Part 2: {}\n    in {:?}\n", output_part2, part2_time);
+        total_time += generator_time + part1_time + part2_time;
     }
 
     if run_all || day == 3 {
@@ -89,6 +93,7 @@ fn main() {
         let output_part2 = day03::solve_part2(&input);
         let part2_time = part2_start.elapsed();
         println!("  Part 2: {}\n    in {:?}\n", output_part2, part2_time);
+        total_time += part1_time + part2_time;
     }
 
     if run_all || day == 4 {
@@ -109,6 +114,7 @@ fn main() {
         let output_part2 = day04::solve_part2(&input);
         let part2_time = part2_start.elapsed();
         println!("  Part 2: {}\n    in {:?}\n", output_part2, part2_time);
+        total_time += generator_time + part1_time + part2_time;
     }
 
     if run_all || day == 5 {
@@ -124,6 +130,7 @@ fn main() {
         let output_part2 = day05::solve_part2(&input);
         let part2_time = part2_start.elapsed();
         println!("  Part 2: {}\n    in {:?}\n", output_part2, part2_time);
+        total_time += part1_time + part2_time;
     }
 
     if run_all || day == 6 {
@@ -139,6 +146,7 @@ fn main() {
         let output_part2 = day06::solve_part2(&input);
         let part2_time = part2_start.elapsed();
         println!("  Part 2: {}\n    in {:?}\n", output_part2, part2_time);
+        total_time += part1_time + part2_time;
     }
 
     if run_all || day == 7 {
@@ -159,5 +167,8 @@ fn main() {
         let output_part2 = day07::solve_part2(&input);
         let part2_time = part2_start.elapsed();
         println!("  Part 2: {}\n    in {:?}\n", output_part2, part2_time);
+        total_time += generator_time + part1_time + part2_time;
     }
+
+    println!("Total time: {:?}", total_time);
 }

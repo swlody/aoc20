@@ -1,16 +1,5 @@
 type BagMap<'a> = fnv::FnvHashMap<&'a str, Vec<(&'a str, u32)>>;
 
-fn contains_shiny_gold_recursive(map: &BagMap, color: &str) -> bool {
-    if color == "shiny gold" {
-        true
-    } else {
-        let contained = map.get(color).unwrap();
-        contained
-            .iter()
-            .any(|(color, _count)| contains_shiny_gold_recursive(map, color))
-    }
-}
-
 pub fn input_generator(input: &str) -> BagMap {
     input
         .lines()
@@ -23,15 +12,26 @@ pub fn input_generator(input: &str) -> BagMap {
                         None
                     } else {
                         let (count, contained_color) = contained.split_once(' ').unwrap();
-                        let count = count.parse::<u32>().unwrap();
+                        let count = count.parse().unwrap();
                         let contained_color = contained_color.rsplit_once(' ').unwrap().0;
                         Some((contained_color, count))
                     }
                 })
-                .collect::<Vec<_>>();
+                .collect();
             (base_color, contained_bags)
         })
         .collect()
+}
+
+fn contains_shiny_gold_recursive(map: &BagMap, color: &str) -> bool {
+    if color == "shiny gold" {
+        true
+    } else {
+        let contained = map.get(color).unwrap();
+        contained
+            .iter()
+            .any(|(color, _count)| contains_shiny_gold_recursive(map, color))
+    }
 }
 
 pub fn solve_part1(map: &BagMap) -> usize {
