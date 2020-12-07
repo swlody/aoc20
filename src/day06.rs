@@ -1,34 +1,3 @@
-// use std::collections::BTreeSet;
-
-// pub fn solve_part1(input: &str) -> usize {
-//     input
-//         .split("\n\n")
-//         .map(|group| {
-//             group
-//                 .lines()
-//                 .flat_map(str::chars)
-//                 .collect::<BTreeSet<_>>()
-//                 .len()
-//         })
-//         .sum()
-// }
-
-// A little uglier but ~10x faster than above
-// pub fn solve_part1(input: &str) -> usize {
-//     input
-//         .split("\n\n")
-//         .map(|group| {
-//             let mut existence = [false; 26];
-//             group
-//                 .lines()
-//                 .flat_map(str::bytes)
-//                 .map(|c| !std::mem::replace(&mut existence[(c - b'a') as usize], true) as usize)
-//                 .sum::<usize>()
-//         })
-//         .sum()
-// }
-
-// Using a bitset instead of a bool array
 pub fn solve_part1(input: &str) -> u32 {
     input
         .split("\n\n")
@@ -41,20 +10,6 @@ pub fn solve_part1(input: &str) -> u32 {
         })
         .sum()
 }
-
-// pub fn solve_part2(input: &str) -> usize {
-//     input
-//         .split("\n\n")
-//         .map(|group| {
-//             group
-//                 .lines()
-//                 .map(|person| person.chars().collect::<BTreeSet<_>>())
-//                 .fold_first(|a, b| a.intersection(&b).copied().collect())
-//                 .unwrap()
-//                 .len()
-//         })
-//         .sum()
-// }
 
 pub fn solve_part2(input: &str) -> u32 {
     input
