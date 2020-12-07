@@ -54,13 +54,13 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        let policies = input_generator(&INPUT);
+        let policies = input_generator(INPUT);
         assert_eq!(2, solve_part1(&policies));
     }
 
     #[test]
     fn test_part2() {
-        let policies = input_generator(&INPUT);
+        let policies = input_generator(INPUT);
         assert_eq!(1, solve_part2(&policies));
     }
 }

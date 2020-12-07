@@ -45,8 +45,7 @@ pub fn solve_part2(passports: &[Passport]) -> usize {
                 let (height, measure) = hgt.split_at(hgt.len() - 2);
                 Some((height.parse().ok()?, measure))
             }) {
-                Some((150..=193, "cm")) => {}
-                Some((59..=76, "in")) => {}
+                Some((150..=193, "cm") | (59..=76, "in")) => {}
                 _ => return false,
             }
 
@@ -93,7 +92,7 @@ hgt:179cm
 
 hcl:#cfa07d eyr:2025 pid:166559648
 iyr:2011 ecl:brn hgt:59in";
-        let passports = input_generator(&INPUT);
+        let passports = input_generator(INPUT);
         assert_eq!(2, solve_part1(&passports));
     }
 
@@ -125,9 +124,9 @@ eyr:2022
 
 iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719";
 
-        let passports = input_generator(&INPUT1);
+        let passports = input_generator(INPUT1);
         assert_eq!(0, solve_part2(&passports));
-        let passports = input_generator(&INPUT2);
+        let passports = input_generator(INPUT2);
         assert_eq!(4, solve_part2(&passports));
     }
 }

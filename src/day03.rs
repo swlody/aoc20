@@ -40,11 +40,11 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        assert_eq!(7, solve_part1(&INPUT));
+        assert_eq!(7, solve_part1(INPUT));
     }
 
     #[test]
     fn test_part2() {
-        assert_eq!(336, solve_part2(&INPUT));
+        assert_eq!(336, solve_part2(INPUT));
     }
 }

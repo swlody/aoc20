@@ -62,7 +62,7 @@ pub fn solve_part2(input: &str) -> u32 {
         .map(|group| {
             group
                 .lines()
-                .map(|person| person.bytes().fold(0u32, |set, c| set | 1 << (c - b'a')))
+                .map(|person| person.bytes().fold(0, |set, c| set | 1 << (c - b'a')))
                 .fold(u32::MAX, |a, b| a & b)
                 .count_ones()
         })
@@ -91,11 +91,11 @@ b";
 
     #[test]
     fn test_part1() {
-        assert_eq!(11, solve_part1(&INPUT));
+        assert_eq!(11, solve_part1(INPUT));
     }
 
     #[test]
     fn test_part2() {
-        assert_eq!(6, solve_part2(&INPUT));
+        assert_eq!(6, solve_part2(INPUT));
     }
 }
