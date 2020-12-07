@@ -12,7 +12,7 @@ dependencies = [
 [[package]]
 name = "aoc"
 version = "0.1.0"
-source = "git+https://github.com/swlody/aoc?branch=main#ae81b2bf5f05b50c922676ac999c8b58e8681d68"
+source = "git+https://github.com/swlody/aoc?branch=main#c3f2626ae38e59c15903998e248a42147e04e04a"
 dependencies = [
  "attohttpc",
  "chrono",
