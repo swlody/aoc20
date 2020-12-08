@@ -1,23 +1,23 @@
-use std::str::FromStr;
-
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 enum Instruction {
     Nop(i32),
     Acc(i32),
     Jmp(i32),
 }
 
-use Instruction::*;
-
 #[derive(Clone)]
 pub struct Program {
     prog: Vec<Instruction>,
-    pc: usize,
+    pc: i32,
     acc: i32,
 }
 
+use Instruction::*;
+
+use std::{num::ParseIntError, str::FromStr};
+
 impl FromStr for Program {
-    type Err = std::num::ParseIntError;
+    type Err = ParseIntError;
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         let prog = input
@@ -42,25 +42,32 @@ impl FromStr for Program {
     }
 }
 
+impl Program {
+    fn run(&mut self) -> bool {
+        let mut visited = vec![false; self.prog.len()];
+        while let Some(instr) = self.prog.get(self.pc as usize) {
+            if visited[self.pc as usize] {
+                return false;
+            }
+            visited[self.pc as usize] = true;
+            self.pc += 1;
+            match instr {
+                Nop(_val) => {}
+                Acc(val) => self.acc += val,
+                Jmp(val) => self.pc += val - 1,
+            }
+        }
+        true
+    }
+}
+
 pub fn input_generator(input: &str) -> Program {
     input.parse().unwrap()
 }
 
 pub fn solve_part1(program: &Program) -> i32 {
     let mut program = program.clone();
-    let mut visited: Vec<bool> = vec![false; program.prog.len()];
-    while let Some(instr) = program.prog.get(program.pc) {
-        if visited[program.pc] {
-            break;
-        }
-        visited[program.pc] = true;
-        program.pc += 1;
-        match instr {
-            Nop(_val) => {}
-            Acc(val) => program.acc += val,
-            Jmp(val) => program.pc = program.pc.wrapping_add(*val as usize) - 1,
-        }
-    }
+    program.run();
     program.acc
 }
 
@@ -69,36 +76,20 @@ pub fn solve_part2(program: &Program) -> i32 {
         if let Acc(_) = program.prog[i] {
             continue;
         }
-        let mut program = program.clone();
 
+        let mut program = program.clone();
         program.prog[i] = match program.prog[i] {
             Jmp(val) => Nop(val),
             Nop(val) => Jmp(val),
             Acc(_) => unreachable!(),
         };
 
-        let mut visited: Vec<bool> = vec![false; program.prog.len()];
-        let mut terminated = true;
-        while let Some(instr) = program.prog.get(program.pc) {
-            if visited[program.pc] {
-                terminated = false;
-                break;
-            }
-            visited[program.pc] = true;
-            program.pc += 1;
-            match instr {
-                Nop(_val) => {}
-                Acc(val) => program.acc += val,
-                Jmp(val) => program.pc = program.pc.wrapping_add(*val as usize) - 1,
-            }
-        }
-
+        let terminated = program.run();
         if terminated {
             return program.acc;
         }
     }
-
-    0
+    panic!("No valid replacement found");
 }
 
 #[cfg(test)]
