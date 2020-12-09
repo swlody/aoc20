@@ -3,38 +3,43 @@ pub fn input_generator(input: &str) -> Vec<u64> {
 }
 
 fn solve_part1_with_preamble_length(numbers: &[u64], preamble_length: usize) -> u64 {
-    'outer: for (idx, &number) in numbers.iter().enumerate().skip(preamble_length) {
-        let window = &numbers[idx - preamble_length..idx];
-        for &other_number in window.iter() {
-            let result = number
-                .checked_sub(other_number)
-                .unwrap_or_else(|| other_number - number);
+    let offset = numbers
+        .windows(preamble_length)
+        .enumerate()
+        .find(|&(offset, window)| {
+            let number = numbers[preamble_length + offset];
+            for &other_number in window.iter() {
+                let result = number
+                    .checked_sub(other_number)
+                    .unwrap_or_else(|| other_number - number);
 
-            if number != other_number && window.contains(&result) {
-                continue 'outer;
+                if window.contains(&result) {
+                    return false;
+                }
             }
-        }
-        return number;
-    }
-    panic!("No answer found")
+            true
+        })
+        .unwrap()
+        .0;
+
+    numbers[preamble_length + offset]
 }
 
 use std::cmp::Ordering;
 
 fn solve_part2_from_part1(numbers: &[u64], part1_result: u64) -> u64 {
-    'outer: for start_point in 0..numbers.len() {
-        let mut result = 0;
-        let (mut min, mut max) = (u64::MAX, 0);
-        for offset in 0..numbers.len() - start_point {
-            let next_number = numbers[start_point + offset];
+    for (start_point, &start_number) in numbers.iter().enumerate() {
+        let mut result = start_number;
+        let (mut min, mut max) = (result, result);
+        for &next_number in numbers[start_point + 1..numbers.len() - start_point].iter() {
             match (result + next_number).cmp(&part1_result) {
-                Ordering::Equal if offset > 0 => return min + max,
+                Ordering::Greater => break,
+                Ordering::Equal => return min + max,
                 Ordering::Less => {
                     min = std::cmp::min(min, next_number);
                     max = std::cmp::max(max, next_number);
                     result += next_number;
                 }
-                _ => continue 'outer,
             }
         }
     }
