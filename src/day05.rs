@@ -9,13 +9,21 @@ fn get_seat_id(seat: &str) -> u32 {
 }
 
 pub fn solve_part1(input: &str) -> u32 {
-    input.lines().map(get_seat_id).max().unwrap()
+    input
+        .lines()
+        .map(get_seat_id)
+        .max()
+        .expect("No max value found")
 }
 
 pub fn solve_part2(input: &str) -> u32 {
     let mut seat_ids = input.lines().map(get_seat_id).collect::<Vec<_>>();
     seat_ids.sort_unstable();
-    seat_ids.windows(2).find(|w| w[0] + 1 != w[1]).unwrap()[0] + 1
+    seat_ids
+        .windows(2)
+        .find(|w| w[0] + 1 != w[1])
+        .expect("No open seat found")[0]
+        + 1
 }
 
 #[cfg(test)]

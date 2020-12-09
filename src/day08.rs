@@ -14,18 +14,16 @@ pub struct Program {
 
 use Instruction::*;
 
-use std::{num::ParseIntError, str::FromStr};
-
-impl FromStr for Program {
-    type Err = ParseIntError;
+impl std::str::FromStr for Program {
+    type Err = std::num::ParseIntError;
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         let prog = input
             .lines()
             .map(|line| {
-                let (instr, value) = line.split_once(' ').unwrap();
+                let (instruction, value) = line.split_once(' ').unwrap();
                 let value = value.parse()?;
-                Ok(match instr {
+                Ok(match instruction {
                     "nop" => Nop(value),
                     "acc" => Acc(value),
                     "jmp" => Jmp(value),
@@ -42,16 +40,19 @@ impl FromStr for Program {
     }
 }
 
+use std::convert::TryFrom;
+
 impl Program {
     fn run(&mut self) -> bool {
         let mut visited = vec![false; self.prog.len()];
-        while let Some(instr) = self.prog.get(self.pc as usize) {
-            if visited[self.pc as usize] {
+        let pc = usize::try_from(self.pc).expect("Invalid value for program counter");
+        while let Some(instruction) = self.prog.get(pc) {
+            if visited[pc] {
                 return false;
             }
-            visited[self.pc as usize] = true;
+            visited[pc] = true;
             self.pc += 1;
-            match instr {
+            match instruction {
                 Nop(_val) => {}
                 Acc(val) => self.acc += val,
                 Jmp(val) => self.pc += val - 1,
@@ -72,13 +73,13 @@ pub fn solve_part1(program: &Program) -> i32 {
 }
 
 pub fn solve_part2(program: &Program) -> i32 {
-    for i in 0..program.prog.len() {
-        if let Acc(_) = program.prog[i] {
+    for (idx, instr) in program.prog.iter().enumerate() {
+        if let Acc(_) = instr {
             continue;
         }
 
         let mut program = program.clone();
-        program.prog[i] = match program.prog[i] {
+        program.prog[idx] = match *instr {
             Jmp(val) => Nop(val),
             Nop(val) => Jmp(val),
             Acc(_) => unreachable!(),

@@ -11,6 +11,7 @@ pub fn input_generator(input: &str) -> Vec<Policy> {
             let (range, rest) = line.split_once(' ').unwrap();
             let (first, second) = range.split_once('-').unwrap();
             let (character, password) = rest.split_once(": ").unwrap();
+            assert!(character.is_ascii() && character.len() == 1);
 
             Policy {
                 position: (first.parse().unwrap(), second.parse().unwrap()),
