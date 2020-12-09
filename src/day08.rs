@@ -40,17 +40,14 @@ impl std::str::FromStr for Program {
     }
 }
 
-use std::convert::TryFrom;
-
 impl Program {
     fn run(&mut self) -> bool {
         let mut visited = vec![false; self.prog.len()];
-        let pc = usize::try_from(self.pc).expect("Invalid value for program counter");
-        while let Some(instruction) = self.prog.get(pc) {
-            if visited[pc] {
+        while let Some(instruction) = self.prog.get(self.pc as usize) {
+            if visited[self.pc as usize] {
                 return false;
             }
-            visited[pc] = true;
+            visited[self.pc as usize] = true;
             self.pc += 1;
             match instruction {
                 Nop(_val) => {}
