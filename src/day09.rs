@@ -19,7 +19,7 @@ fn solve_part1_with_preamble_length(numbers: &[u64], preamble_length: usize) -> 
             }
             true
         })
-        .unwrap()
+        .expect("No answer found")
         .0;
 
     numbers[preamble_length + offset]
