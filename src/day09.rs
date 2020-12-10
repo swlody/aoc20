@@ -46,19 +46,10 @@ fn solve_part2_from_part1(numbers: &[u64], part1_result: u64) -> u64 {
     panic!("No answer found")
 }
 
-use std::fmt;
-
-pub struct Answer(u64, u64);
-impl fmt::Display for Answer {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Part 1: {}, Part 2: {}", self.0, self.1)
-    }
-}
-
-pub fn solve_both_parts(input: &[u64]) -> Answer {
+pub fn solve_both_parts(input: &[u64]) -> (u64, u64) {
     let part1_result = solve_part1_with_preamble_length(input, 25);
     let part2_result = solve_part2_from_part1(input, part1_result);
-    Answer(part1_result, part2_result)
+    (part1_result, part2_result)
 }
 
 #[cfg(test)]

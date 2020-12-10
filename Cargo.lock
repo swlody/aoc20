@@ -12,7 +12,7 @@ dependencies = [
 [[package]]
 name = "aoc-main"
 version = "0.2.0"
-source = "git+https://github.com/swlody/aoc?branch=main#aac0654afd5c750aa2a6f5b0e082e06d3393614e"
+source = "git+https://github.com/swlody/aoc?branch=main#9d8d1a6ddb70a783949e6fb3d499cb5e51d37ae1"
 dependencies = [
  "chrono",
  "clap 3.0.0-beta.2",
