@@ -1,3 +1,5 @@
+use fnv::FnvHashMap as HashMap;
+
 pub fn input_generator(input: &str) -> Vec<u32> {
     let mut input: Vec<_> = input.lines().map(|line| line.parse().unwrap()).collect();
     input.sort_unstable();
@@ -13,6 +15,27 @@ pub fn solve_part1(input: &[u32]) -> u32 {
             _ => (ones, threes),
         });
     ones * threes
+}
+
+pub fn solve_part2(input: &[u32]) -> u64 {
+    let mut cache = HashMap::default();
+    cache.insert(0, 1);
+    for &joltage in input {
+        let chains = joltage
+            .checked_sub(1)
+            .and_then(|res| cache.get(&res))
+            .unwrap_or(&0)
+            + joltage
+                .checked_sub(2)
+                .and_then(|res| cache.get(&res))
+                .unwrap_or(&0)
+            + joltage
+                .checked_sub(3)
+                .and_then(|res| cache.get(&res))
+                .unwrap_or(&0);
+        cache.insert(joltage, chains);
+    }
+    cache[input.last().unwrap()]
 }
 
 #[cfg(test)]
@@ -70,5 +93,14 @@ mod tests {
 
         let input = input_generator(INPUT2);
         assert_eq!(220, solve_part1(&input));
+    }
+
+    #[test]
+    fn test_part2() {
+        let input = input_generator(INPUT1);
+        assert_eq!(8, solve_part2(&input));
+
+        let input = input_generator(INPUT2);
+        assert_eq!(19208, solve_part2(&input));
     }
 }
