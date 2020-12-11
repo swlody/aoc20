@@ -5,14 +5,13 @@ name = "advent-of-code-2020"
 version = "0.1.0"
 dependencies = [
  "aoc-main",
- "chrono",
  "fnv",
 ]
 
 [[package]]
 name = "aoc-main"
 version = "0.3.0"
-source = "git+https://github.com/swlody/aoc?branch=main#d73105760e2031110c51fcf868366e653a316d5c"
+source = "git+https://github.com/swlody/aoc?branch=main#f603bddebcfe1f8aa57ee6cd4cc2ff828133659c"
 dependencies = [
  "chrono",
  "clap",
