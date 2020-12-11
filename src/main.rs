@@ -28,5 +28,5 @@ aoc_main::main! {
     day08 : input_generator => solve_part1, solve_part2;
     day09 : input_generator => solve_both_parts;
     day10 : input_generator => solve_part1, solve_part2;
-    day11 : input_generator => solve_part1;
+    day11 : input_generator => solve_part1, solve_part2;
 }

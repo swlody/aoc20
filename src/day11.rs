@@ -39,7 +39,10 @@ pub fn input_generator(input: &str) -> Matrix {
 }
 
 impl Matrix {
-    fn apply_rules(&mut self) -> Option<u32> {
+    fn apply_rules<F>(&mut self, count_occupied: F, max_adjacent: u32) -> Option<u32>
+    where
+        F: Fn(&Self, usize, usize) -> u32,
+    {
         let mut new_rows = Vec::with_capacity(self.num_rows);
 
         let mut unchanged = true;
@@ -49,10 +52,10 @@ impl Matrix {
             for seat_idx in 0..self.num_columns {
                 let new_state = match (
                     self.rows[row_idx][seat_idx],
-                    self.count_adjacent(row_idx, seat_idx),
+                    count_occupied(&self, row_idx, seat_idx),
                 ) {
                     (Spot::Floor, _) => Spot::Floor,
-                    (Spot::Occupied, adjacent_count) if adjacent_count >= 4 => {
+                    (Spot::Occupied, adjacent_count) if adjacent_count >= max_adjacent => {
                         unchanged = false;
                         Spot::Empty
                     }
@@ -93,12 +96,62 @@ impl Matrix {
         }
         adjacent_count
     }
+
+    fn count_visible(&self, row_idx: usize, seat_idx: usize) -> u32 {
+        use std::convert::TryFrom;
+
+        const STEPS: [(i32, i32); 8] = [
+            (-1, -1),
+            (-1, 0),
+            (-1, 1),
+            (0, -1),
+            (0, 1),
+            (1, -1),
+            (1, 0),
+            (1, 1),
+        ];
+
+        let (i, j) = (
+            i32::try_from(row_idx).unwrap(),
+            i32::try_from(seat_idx).unwrap(),
+        );
+        let mut visible = 0;
+        for (dx, dy) in STEPS.iter() {
+            let (mut i, mut j) = (i, j);
+            loop {
+                i += dx;
+                j += dy;
+                match self
+                    .rows
+                    .get(i as usize)
+                    .and_then(|row| row.get(j as usize))
+                {
+                    Some(Spot::Occupied) => {
+                        visible += 1;
+                        break;
+                    }
+                    Some(Spot::Floor) => {}
+                    Some(Spot::Empty) | None => break,
+                }
+            }
+        }
+        visible
+    }
 }
 
 pub fn solve_part1(input: &Matrix) -> u32 {
     let mut matrix = input.clone();
     loop {
-        if let Some(occupied_count) = matrix.apply_rules() {
+        if let Some(occupied_count) = matrix.apply_rules(Matrix::count_adjacent, 4) {
+            return occupied_count;
+        }
+    }
+}
+
+pub fn solve_part2(input: &Matrix) -> u32 {
+    let mut matrix = input.clone();
+    loop {
+        if let Some(occupied_count) = matrix.apply_rules(Matrix::count_visible, 5) {
             return occupied_count;
         }
     }
@@ -123,5 +176,11 @@ L.LLLLL.LL";
     fn test_part1() {
         let input = input_generator(INPUT);
         assert_eq!(37, solve_part1(&input));
+    }
+
+    #[test]
+    fn test_part2() {
+        let input = input_generator(INPUT);
+        assert_eq!(26, solve_part2(&input));
     }
 }
