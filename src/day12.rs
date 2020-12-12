@@ -14,9 +14,9 @@ pub enum Turn {
 }
 
 pub enum Action {
-    Movement(Direction, i32),
+    Move(Direction, i32),
     Forward(i32),
-    Rotation(Turn),
+    Rotate(Turn),
 }
 
 use {Action::*, Direction::*, Turn::*};
@@ -49,16 +49,16 @@ pub fn input_generator(input: &str) -> Vec<Action> {
         .map(|line| {
             let (action, amount) = line.split_at(1);
             match (action, amount.parse().unwrap()) {
-                ("N", amount) => Movement(North, amount),
-                ("S", amount) => Movement(South, amount),
-                ("E", amount) => Movement(East, amount),
-                ("W", amount) => Movement(West, amount),
+                ("N", amount) => Move(North, amount),
+                ("S", amount) => Move(South, amount),
+                ("E", amount) => Move(East, amount),
+                ("W", amount) => Move(West, amount),
 
                 ("F", amount) => Forward(amount),
 
-                ("L" | "R", 180) => Rotation(Reverse),
-                ("L", 90) | ("R", 270) => Rotation(Left),
-                ("R", 90) | ("L", 270) => Rotation(Right),
+                ("L" | "R", 180) => Rotate(Reverse),
+                ("L", 90) | ("R", 270) => Rotate(Left),
+                ("R", 90) | ("L", 270) => Rotate(Right),
 
                 _ => panic!("Invalid input: {}", line),
             }
@@ -77,10 +77,10 @@ pub fn solve_part1(actions: &[Action]) -> u32 {
 
     for action in actions.iter() {
         match action {
-            Movement(North, val) => y += val,
-            Movement(South, val) => y -= val,
-            Movement(East, val) => x += val,
-            Movement(West, val) => x -= val,
+            Move(North, val) => y += val,
+            Move(South, val) => y -= val,
+            Move(East, val) => x += val,
+            Move(West, val) => x -= val,
 
             Forward(val) => match facing {
                 North => y += val,
@@ -89,7 +89,7 @@ pub fn solve_part1(actions: &[Action]) -> u32 {
                 West => x -= val,
             },
 
-            Rotation(turn) => facing.rotate(*turn),
+            Rotate(turn) => facing.rotate(*turn),
         }
     }
 
@@ -102,23 +102,23 @@ pub fn solve_part2(actions: &[Action]) -> u32 {
 
     for action in actions.iter() {
         match action {
-            Movement(North, val) => waypoint_y += val,
-            Movement(South, val) => waypoint_y -= val,
-            Movement(East, val) => waypoint_x += val,
-            Movement(West, val) => waypoint_x -= val,
+            Move(North, val) => waypoint_y += val,
+            Move(South, val) => waypoint_y -= val,
+            Move(East, val) => waypoint_x += val,
+            Move(West, val) => waypoint_x -= val,
 
             Forward(val) => {
                 y += val * waypoint_y;
                 x += val * waypoint_x;
             }
 
-            Rotation(Reverse) => {
+            Rotate(Reverse) => {
                 (waypoint_x, waypoint_y) = (-waypoint_x, -waypoint_y);
             }
-            Rotation(Left) => {
+            Rotate(Left) => {
                 (waypoint_x, waypoint_y) = (-waypoint_y, waypoint_x);
             }
-            Rotation(Right) => {
+            Rotate(Right) => {
                 (waypoint_x, waypoint_y) = (waypoint_y, -waypoint_x);
             }
         }
