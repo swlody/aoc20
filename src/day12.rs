@@ -48,15 +48,13 @@ pub fn input_generator(input: &str) -> Vec<Action> {
         .lines()
         .map(|line| {
             let (action, amount) = line.split_at(1);
-            let amount = amount.parse().unwrap();
+            match (action, amount.parse().unwrap()) {
+                ("N", amount) => Movement(North, amount),
+                ("S", amount) => Movement(South, amount),
+                ("E", amount) => Movement(East, amount),
+                ("W", amount) => Movement(West, amount),
 
-            match (action, amount) {
-                ("N", _) => Movement(North, amount),
-                ("S", _) => Movement(South, amount),
-                ("E", _) => Movement(East, amount),
-                ("W", _) => Movement(West, amount),
-
-                ("F", _) => Forward(amount),
+                ("F", amount) => Forward(amount),
 
                 ("L" | "R", 180) => Rotation(Reverse),
                 ("L", 90) | ("R", 270) => Rotation(Left),
@@ -114,17 +112,15 @@ pub fn solve_part2(actions: &[Action]) -> u32 {
                 x += val * way_x;
             }
 
-            Rotation(turn) => match turn {
-                Reverse => {
-                    (way_x, way_y) = (-way_x, -way_y);
-                }
-                Left => {
-                    (way_x, way_y) = (-way_y, way_x);
-                }
-                Right => {
-                    (way_x, way_y) = (way_y, -way_x);
-                }
-            },
+            Rotation(Reverse) => {
+                (way_x, way_y) = (-way_x, -way_y);
+            }
+            Rotation(Left) => {
+                (way_x, way_y) = (-way_y, way_x);
+            }
+            Rotation(Right) => {
+                (way_x, way_y) = (way_y, -way_x);
+            }
         }
     }
 
