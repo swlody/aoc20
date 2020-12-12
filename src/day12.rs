@@ -98,28 +98,28 @@ pub fn solve_part1(actions: &[Action]) -> u32 {
 
 pub fn solve_part2(actions: &[Action]) -> u32 {
     let (mut x, mut y) = (0, 0);
-    let (mut way_x, mut way_y) = (10, 1);
+    let (mut waypoint_x, mut waypoint_y) = (10, 1);
 
     for action in actions.iter() {
         match action {
-            Movement(North, val) => way_y += val,
-            Movement(South, val) => way_y -= val,
-            Movement(East, val) => way_x += val,
-            Movement(West, val) => way_x -= val,
+            Movement(North, val) => waypoint_y += val,
+            Movement(South, val) => waypoint_y -= val,
+            Movement(East, val) => waypoint_x += val,
+            Movement(West, val) => waypoint_x -= val,
 
             Forward(val) => {
-                y += val * way_y;
-                x += val * way_x;
+                y += val * waypoint_y;
+                x += val * waypoint_x;
             }
 
             Rotation(Reverse) => {
-                (way_x, way_y) = (-way_x, -way_y);
+                (waypoint_x, waypoint_y) = (-waypoint_x, -waypoint_y);
             }
             Rotation(Left) => {
-                (way_x, way_y) = (-way_y, way_x);
+                (waypoint_x, waypoint_y) = (-waypoint_y, waypoint_x);
             }
             Rotation(Right) => {
-                (way_x, way_y) = (way_y, -way_x);
+                (waypoint_x, waypoint_y) = (waypoint_y, -waypoint_x);
             }
         }
     }
