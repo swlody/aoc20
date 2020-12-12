@@ -1,25 +1,10 @@
 #[derive(Copy, Clone)]
 pub enum Direction {
     North,
-    East,
     South,
+    East,
     West,
 }
-
-#[derive(Copy, Clone)]
-pub enum Turn {
-    Left,
-    Right,
-    Reverse,
-}
-
-pub enum Action {
-    Move(Direction, i32),
-    Forward(i32),
-    Rotate(Turn),
-}
-
-use {Action::*, Direction::*, Turn::*};
 
 impl Direction {
     fn rotate(&mut self, turn: Turn) {
@@ -42,6 +27,22 @@ impl Direction {
         };
     }
 }
+
+#[derive(Copy, Clone)]
+pub enum Turn {
+    Left,
+    Right,
+    Reverse,
+}
+
+#[derive(Copy, Clone)]
+pub enum Action {
+    Move(Direction, i32),
+    Forward(i32),
+    Rotate(Turn),
+}
+
+use {Action::*, Direction::*, Turn::*};
 
 pub fn input_generator(input: &str) -> Vec<Action> {
     input
