@@ -39,32 +39,28 @@ pub fn input_generator(input: &str) -> Matrix {
 }
 
 impl Matrix {
-    fn apply_rules<F>(&mut self, count_occupied: F, max_adjacent: u32) -> Option<u32>
+    fn apply_rules<F>(&mut self, count_occupied: F, max_occupied: u32) -> Option<u32>
     where
         F: Fn(&Self, usize, usize) -> u32,
     {
-        let mut new_rows = Vec::with_capacity(self.num_rows);
-
         let mut unchanged = true;
         let mut occupied_count = 0;
+        let mut new_rows = Vec::with_capacity(self.num_rows);
         for row_idx in 0..self.num_rows {
             let mut new_row = Vec::with_capacity(self.num_columns);
             for seat_idx in 0..self.num_columns {
-                let new_state = match (
-                    self.rows[row_idx][seat_idx],
-                    count_occupied(&self, row_idx, seat_idx),
-                ) {
+                let current_state = self.rows[row_idx][seat_idx];
+
+                let new_state = match (current_state, count_occupied(&self, row_idx, seat_idx)) {
                     (Spot::Floor, _) => Spot::Floor,
-                    (Spot::Occupied, adjacent_count) if adjacent_count >= max_adjacent => {
-                        unchanged = false;
-                        Spot::Empty
-                    }
-                    (Spot::Empty, 0) => {
-                        unchanged = false;
-                        Spot::Occupied
-                    }
-                    (current_state, _) => current_state,
+                    (Spot::Occupied, occupied) if occupied >= max_occupied => Spot::Empty,
+                    (Spot::Empty, 0) => Spot::Occupied,
+                    _ => current_state,
                 };
+
+                if current_state != new_state {
+                    unchanged = false;
+                }
 
                 if new_state == Spot::Occupied {
                     occupied_count += 1;
@@ -98,8 +94,6 @@ impl Matrix {
     }
 
     fn count_visible(&self, row_idx: usize, seat_idx: usize) -> u32 {
-        use std::convert::TryFrom;
-
         const STEPS: [(i32, i32); 8] = [
             (-1, -1),
             (-1, 0),
@@ -111,16 +105,14 @@ impl Matrix {
             (1, 1),
         ];
 
-        let (i, j) = (
-            i32::try_from(row_idx).unwrap(),
-            i32::try_from(seat_idx).unwrap(),
-        );
+        let (i, j) = (row_idx as i32, seat_idx as i32);
         let mut visible = 0;
         for (dx, dy) in STEPS.iter() {
             let (mut i, mut j) = (i, j);
             loop {
                 i += dx;
                 j += dy;
+
                 match self
                     .rows
                     .get(i as usize)
