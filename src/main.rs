@@ -1,4 +1,5 @@
 #![feature(array_map)]
+#![feature(destructuring_assignment)]
 #![feature(iterator_fold_self)]
 #![feature(map_first_last)]
 #![feature(or_patterns)]
@@ -30,5 +31,5 @@ aoc_main::main! {
     day09 : input_generator => solve_both_parts;
     day10 : input_generator => solve_part1, solve_part2;
     day11 : input_generator => solve_part1, solve_part2;
-    day12 : input_generator => solve_part1;
+    day12 : input_generator => solve_part1, solve_part2;
 }

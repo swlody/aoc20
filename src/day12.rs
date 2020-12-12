@@ -98,6 +98,39 @@ pub fn solve_part1(actions: &[Action]) -> u32 {
     manhattan_distance((x, y), (0, 0))
 }
 
+pub fn solve_part2(actions: &[Action]) -> u32 {
+    let (mut x, mut y) = (0, 0);
+    let (mut way_x, mut way_y) = (10, 1);
+
+    for action in actions.iter() {
+        match action {
+            Movement(North, val) => way_y += val,
+            Movement(South, val) => way_y -= val,
+            Movement(East, val) => way_x += val,
+            Movement(West, val) => way_x -= val,
+
+            Forward(val) => {
+                y += val * way_y;
+                x += val * way_x;
+            }
+
+            Rotation(turn) => match turn {
+                Reverse => {
+                    (way_x, way_y) = (-way_x, -way_y);
+                }
+                Left => {
+                    (way_x, way_y) = (-way_y, way_x);
+                }
+                Right => {
+                    (way_x, way_y) = (way_y, -way_x);
+                }
+            },
+        }
+    }
+
+    manhattan_distance((x, y), (0, 0))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -112,5 +145,11 @@ F11";
     fn test_part1() {
         let input = input_generator(INPUT);
         assert_eq!(25, solve_part1(&input));
+    }
+
+    #[test]
+    fn test_part2() {
+        let input = input_generator(INPUT);
+        assert_eq!(286, solve_part2(&input));
     }
 }
