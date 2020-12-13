@@ -1,16 +1,13 @@
 pub fn solve_part1(input: &str) -> u32 {
     let (earliest, ids) = input.split_once('\n').unwrap();
-    let earliest = earliest.parse().unwrap();
+    let earliest = earliest.parse::<u32>().unwrap();
     let ids = ids.split(',').filter_map(|x| x.parse().ok());
 
     let mut min = u32::MAX;
     let mut candidate = 0;
 
     for id in ids {
-        let mut time = earliest - (earliest % id);
-        while time < earliest {
-            time += id;
-        }
+        let time = earliest - (earliest % id) + id;
         if time < min {
             min = time;
             candidate = id;
