@@ -7,7 +7,7 @@ pub fn solve_part1(input: &str) -> u32 {
     let mut candidate = 0;
 
     for id in ids {
-        let mut time = 0;
+        let mut time = earliest - (earliest % id);
         while time < earliest {
             time += id;
         }
