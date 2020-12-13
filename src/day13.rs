@@ -3,18 +3,18 @@ pub fn solve_part1(input: &str) -> u32 {
     let earliest = earliest.parse::<u32>().unwrap();
     let ids = ids.split(',').filter_map(|x| x.parse().ok());
 
-    let mut min = u32::MAX;
-    let mut candidate = 0;
+    let mut min_wait_time = u32::MAX;
+    let mut candidate_id = 0;
 
     for id in ids {
-        let time = earliest - (earliest % id) + id;
-        if time < min {
-            min = time;
-            candidate = id;
+        let wait_time = id - (earliest % id);
+        if wait_time < min_wait_time {
+            min_wait_time = wait_time;
+            candidate_id = id;
         }
     }
 
-    candidate * (min - earliest)
+    candidate_id * min_wait_time
 }
 
 #[cfg(test)]
