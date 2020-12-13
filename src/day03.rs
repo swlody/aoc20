@@ -3,8 +3,8 @@ fn trees_hit(input: &str, line_width: usize, slope: &(usize, usize)) -> usize {
     input
         .lines()
         .step_by(y_step)
+        // zip with our index into the line, cycled to horizontally repeat the line
         .zip((0..line_width).cycle().step_by(x_step))
-        .skip(1)
         .filter(|&(line, idx)| line.as_bytes()[idx] as char == '#')
         .count()
 }

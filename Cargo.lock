@@ -11,7 +11,7 @@ dependencies = [
 [[package]]
 name = "aoc-main"
 version = "0.3.0"
-source = "git+https://github.com/swlody/aoc?branch=main#d7159b74a44fa21caea824a908636a9fa03867e8"
+source = "git+https://github.com/swlody/aoc?branch=main#888d0fee0395436fd582899bb8b7bb80aceea19e"
 dependencies = [
  "clap",
  "colored",

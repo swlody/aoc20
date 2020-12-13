@@ -8,6 +8,7 @@ pub fn input_generator(input: &str) -> Vec<Policy> {
     input
         .lines()
         .map(|line| {
+            // {first}-{second} {character}: {password}
             let (range, rest) = line.split_once(' ').unwrap();
             let (first, second) = range.split_once('-').unwrap();
             let (character, password) = rest.split_once(": ").unwrap();
